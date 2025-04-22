@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Timetables</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <h1>Generated Timetables</h1>
+
+    <h2>Person 1</h2>
+    <table>
+        <tr>
+            <th>Day</th>
+            {% for time in timetable1['Monday'].keys() %}
+                <th>{{ time }}</th>
+            {% endfor %}
+        </tr>
+        {% for day, slots in timetable1.items() %}
+        <tr>
+            <td>{{ day }}</td>
+            {% for subject in slots.values() %}
+                <td>{{ subject }}</td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </table>
+
+    <h2>Person 2</h2>
+    <table>
+        <tr>
+            <th>Day</th>
+            {% for time in timetable2['Monday'].keys() %}
+                <th>{{ time }}</th>
+            {% endfor %}
+        </tr>
+        {% for day, slots in timetable2.items() %}
+        <tr>
+            <td>{{ day }}</td>
+            {% for subject in slots.values() %}
+                <td>{{ subject }}</td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </table>
+
+    <br>
+    <a href="/">Generate Again</a>
+    <form action="/download" method="post">
+        <input type="hidden" name="timetable1" value="{{ timetable1 | tojson }}">
+        <input type="hidden" name="timetable2" value="{{ timetable2 | tojson }}">
+        <button type="submit">Download as CSV</button>
+    </form>
+    <form action="/download_pdf" method="post">
+        <input type="hidden" name="timetable1" value="{{ timetable1 | tojson }}">
+        <input type="hidden" name="timetable2" value="{{ timetable2 | tojson }}">
+        <button type="submit">Download as PDF</button>
+    </form>
+    
+    
+</body>
+</html>
+
