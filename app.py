@@ -1,5 +1,8 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, Response
 import random
+import json
+import csv
+from io import StringIO
 
 app = Flask(__name__)
 
@@ -44,7 +47,40 @@ def index():
 
     return render_template('index.html')
 
+# CSV download route
+@app.route('/download', methods=['POST'])
+def download_csv():
+    timetable1 = json.loads(request.form['timetable1'])
+    timetable2 = json.loads(request.form['timetable2'])
+
+    # Convert timetable1 and timetable2 to CSV format
+    output = StringIO()
+    writer = csv.writer(output)
+    writer.writerow(['Day', 'Time', 'Subject'])
+    for day in timetable1:
+        for time, subject in timetable1[day].items():
+            writer.writerow([day, time, subject])
+    for day in timetable2:
+        for time, subject in timetable2[day].items():
+            writer.writerow([day, time, subject])
+
+    output.seek(0)
+    return Response(output.getvalue(),
+                    mimetype='text/csv',
+                    headers={'Content-Disposition': 'attachment;filename=timetable.csv'})
+
+# PDF download route (currently a placeholder)
+@app.route('/download_pdf', methods=['POST'])
+def download_pdf():
+    timetable1 = json.loads(request.form['timetable1'])
+    timetable2 = json.loads(request.form['timetable2'])
+
+    # Create a PDF (use a library like `reportlab` for this)
+    # For simplicity, we won't implement it fully here
+    return "PDF download feature is not implemented yet."
+
 if __name__ == '__main__':
     import os
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port)
+
